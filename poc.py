@@ -5,20 +5,21 @@
 #     return wrapper()
 
 class Records:  # Записи
-    # def init(self, title, deadline=None, group=None, importance=None, text=None, done=False):
-    #     self.title = title
-    #     self.deadline = deadline
-    #     self.group = group
-    #     self.importance = importance
-    #     self.text = text
-    #     self.done = done
-    def __init__(self, title):
+    def __init__(self, title, deadline=None, group=None, importance=None, text=None, done=False):
         self.title = title
-        self.deadline = None
-        self.group = None
-        self.importance = None
-        self.text = None
-        self.done = False
+        self.deadline = deadline
+        self.group = group
+        self.importance = importance
+        self.text = text
+        self.done = done
+
+    # def __init__(self, title):
+    #     self.title = title
+    #     self.deadline = None
+    #     self.group = None
+    #     self.importance = None
+    #     self.text = None
+    #     self.done = False
 
     def get_attrs(self):
         return self.title, self.deadline, self.group, self.importance, self.text, self.done
@@ -66,6 +67,21 @@ class Records:  # Записи
 #     def __init__(self, title):
 #         super().__init__(title)
 
+def print_records(dict_):
+    print("---ВВЕДИТЕ НАЗВАНИЕ ЗАПИСИ, чтобы отредактировать её поля---"
+          "\n(/c - вернуться в меню)")
+    for val in dict_.values():
+        print(f'"{val.title}"', end=" ")
+    # return input("\n>> ")
+    temp_ = input("\n>> ")
+    for val in dict_.values():
+        if temp_ == val.title:
+            return val
+        elif temp_ == "/c":
+            return False
+    print("!!!ВЫ ВВЕЛИ НЕЗАРЕГИСТРИРОВАННУЮ ЗАПИСЬ!!!\n")
+    return print_records(dict_)
+
 
 if __name__ == "__main__":
     records = {}
@@ -77,12 +93,14 @@ if __name__ == "__main__":
               "\t3: Дублировать запись\n"
               "\t4: Удалить запись\n"
               "\t5: Посмотреть записи\n"
-              "\t0: Выйти")
+              "\t6: Поиск записей\n"
+              "\t0: Выйти")  # Меню
         check = input("<---{ВВЕДИТЕ ЦИФРУ, соответствующую пункту меню}--->\n>> ")
-        if check == "0":
+        if check == "0":  # Выйти
+            print("!___[ПРОГРАММА ЗАКРЫТА]___!")
             break
 
-        elif check == "1":
+        elif check == "1":  # Добавить запись
             count += 1
             obj = Records(f"Запись №{count}")
             temp = input("<---{ЗАПОЛНИТЕ ПОЛЯ}--->\n"
@@ -104,7 +122,7 @@ if __name__ == "__main__":
                              "\t1. Важное Срочное\n"
                              "\t2. Важное НеСрочное\n"
                              "\t3. НеВажное Срочное\n"
-                             "\t4. НеВажное НеСрочное\n>> ")
+                             "\t4. НеВажное НеСрочное\n>> ")  # Степень важности записи
                 if temp == "":
                     break
                 elif temp == "1":
@@ -126,91 +144,102 @@ if __name__ == "__main__":
                 obj.text = temp
 
             records[count] = obj
-        elif check == "2":
+
+        elif check == "2":  # Редактировать запись
             if records:
-                print("---ВВЕДИТЕ НАЗВАНИЕ ЗАПИСИ, чтобы отредактировать её поля---")
-                for value in records.values():
-                    print(f'"{value.title}"', end=" ")
-                temp = input("\n>> ")
-                for value in records.values():
-                    if temp == value.title:
-                        while True:
-                            print("Поля записи:\n"
-                                  "\t1. Название\n"
-                                  "\t2. Дедлайн\n"
-                                  "\t3. Група\n"
-                                  "\t4. Степень важности записи\n"
-                                  "\t5. Текст записи\n"
-                                  "\t6. Готово/Не готово")
-                            temp = input("<---{ВВЕДИТЕ ЦИФРУ, соответствующую полю записи}--->\n"
-                                         "(0 - вернуться в меню)\n>> ")
-                            if temp == "0":
-                                break
-                            elif temp == "1":
-                                value.show_title()
-                                print("(/c - отменить изменение поля)")
-                                new = input(">> ")
-                                if new != "/c":
-                                    value.title = new
-                            elif temp == "2":
-                                value.show_deadline()
-                                print("(/c - отменить изменение поля)")
-                                new = input(">> ")
-                                if new != "/c":
-                                    value.deadline = new
-                            elif temp == "3":
-                                value.show_group()
-                                print("(/c - отменить изменение поля)")
-                                new = input(">> ")
-                                if new != "/c":
-                                    value.group = new
-                            elif temp == "4":
-                                value.show_importance()
-                                print("(/c - отменить изменение поля)")
-                                new = input("Доступные степени важности записи:\n"
-                                            "\t1. Важное Срочное\n"
-                                            "\t2. Важное НеСрочное\n"
-                                            "\t3. НеВажное Срочное\n"
-                                            "\t4. НеВажное НеСрочное\n>> ")
-                                if new != "/c":
-                                    if new == "1":
-                                        value.importance = "Важное Срочное"
-                                    elif new == "2":
-                                        value.importance = "Важное НеСрочное"
-                                    elif new == "3":
-                                        value.importance = "НеВажное Срочное"
-                                    elif new == "4":
-                                        value.importance = "НеВажное НеСрочное"
-                                    else:
-                                        print("!!!ВЫ ВВЕЛИ НЕЗАРЕГИСТРИРОВАННЫЙ СИМВОЛ!!!\n")
-                            elif temp == "5":
-                                value.show_text()
-                                print("(/c - отменить изменение поля)")
-                                new = input(">> ")
-                                if new != "/c":
-                                    value.text = new
-                            elif temp == "6":
-                                value.show_done()
-                                print("(/c - отменить изменение поля)")
-                                new = input(">> ")
-                                if new != "/c":
-                                    if new.lower() in ["1", "готово", "да", "выполнено", "true"]:
-                                        value.done = True
-                                    elif new.lower() in ["0", "не готово", "нет", "не выполнено", "false"]:
-                                        value.done = False
-                                    else:
-                                        print("!!!ВЫ ВВЕЛИ НЕЗАРЕГИСТРИРОВАННЫЙ СИМВОЛ!!!\n")
+                record = print_records(records)
+                if record is False:
+                    continue
+                while True:
+                    print("Поля записи:\n"
+                          "\t1. Название\n"
+                          "\t2. Дедлайн\n"
+                          "\t3. Група\n"
+                          "\t4. Степень важности записи\n"
+                          "\t5. Текст записи\n"
+                          "\t6. Готово/Не готово")  # Поля записи
+                    temp = input("<---{ВВЕДИТЕ ЦИФРУ, соответствующую полю записи}--->"
+                                 "\n(0 - вернуться в меню)\n>> ")
+                    if temp == "0":
+                        break
+                    elif temp == "1":
+                        record.show_title()
+                        new = input("(/c - отменить изменение поля)\n>> ")
+                        record.title = new if new != "/c" else record.title
+                    elif temp == "2":
+                        record.show_deadline()
+                        new = input("(/c - отменить изменение поля)\n>> ")
+                        record.deadline = new if new != "/c" else record.deadline
+                    elif temp == "3":
+                        record.show_group()
+                        new = input("(/c - отменить изменение поля)\n>> ")
+                        record.group = new if new != "/c" else record.group
+                    elif temp == "4":
+                        record.show_importance()
+                        new = input("Доступные степени важности записи:\n"
+                                    "\t1. Важное Срочное\n"
+                                    "\t2. Важное НеСрочное\n"
+                                    "\t3. НеВажное Срочное\n"
+                                    "\t4. НеВажное НеСрочное\n"
+                                    "(/c - отменить изменение поля)\n>> ")
+                        if new != "/c":
+                            if new == "1":
+                                record.importance = "Важное Срочное"
+                            elif new == "2":
+                                record.importance = "Важное НеСрочное"
+                            elif new == "3":
+                                record.importance = "НеВажное Срочное"
+                            elif new == "4":
+                                record.importance = "НеВажное НеСрочное"
                             else:
                                 print("!!!ВЫ ВВЕЛИ НЕЗАРЕГИСТРИРОВАННЫЙ СИМВОЛ!!!\n")
-                        break
+                    elif temp == "5":
+                        record.show_text()
+                        new = input("(/c - отменить изменение поля)\n>> ")
+                        record.text = new if new != "/c" else record.text
+                    elif temp == "6":
+                        record.show_done()
+                        new = input("(/c - отменить изменение поля)\n>> ")
+                        if new != "/c":
+                            if new.lower() in ["1", "готово", "да", "выполнено", "true"]:
+                                record.done = True
+                            elif new.lower() in ["0", "не готово", "нет", "не выполнено", "false"]:
+                                record.done = False
+                            else:
+                                print("!!!ВЫ ВВЕЛИ НЕЗАРЕГИСТРИРОВАННЫЙ СИМВОЛ!!!\n")
                     else:
-                        print("<---{СПИСОК ЗАПИСЕЙ ПУСТ}--->")
+                        print("!!!ВЫ ВВЕЛИ НЕЗАРЕГИСТРИРОВАННЫЙ СИМВОЛ!!!\n")
+                    # break
+            else:
+                print("<---{СПИСОК ЗАПИСЕЙ ПУСТ}--->")
 
-        elif check == "5":
+        elif check == "3":  # Дублировать запись
+            if records:
+                record = print_records(records)
+                if record is False:
+                    continue
+                count += 1
+                records[count] = record
+            else:
+                print("<---{СПИСОК ЗАПИСЕЙ ПУСТ}--->")
+
+        elif check == "4":  # Удалить запись
+            if records:
+                continue
+            else:
+                print("<---{СПИСОК ЗАПИСЕЙ ПУСТ}--->")
+
+        elif check == "5":  # Посмотреть записи
             if records:
                 print("\n[ВСЕ ЗАПИСИ]:")
                 for key, value in records.items():
                     print(f"\t{key}: {value.get_attrs()}")
+            else:
+                print("<---{СПИСОК ЗАПИСЕЙ ПУСТ}--->")
+
+        elif check == "6":  # Поиск записей
+            if records:
+                continue
             else:
                 print("<---{СПИСОК ЗАПИСЕЙ ПУСТ}--->")
 
